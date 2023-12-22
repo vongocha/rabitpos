@@ -7,5 +7,5 @@ Manuals
 # Login: http://localhost:8882 | admin: 123456 | saler: 123456
 # phpmyadmin: http://localhost:8881 | username: root | passwd: rabitpos
 
-Demo https://demo.rabitpos.com/
+Demo https://rabitpos.vongocha.com/
 Enjoy
