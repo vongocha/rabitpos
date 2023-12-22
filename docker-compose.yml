@@ -1,0 +1,63 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: rabitpos
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: rabitpos
+    container_name: rabitpos
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./rabitpos:/var/www
+    networks:
+      - rabitpos
+
+  db:
+    image: mysql:5.7
+    container_name: db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+#      SERVICE_TAGS: dev
+#      SERVICE_NAME: mysql
+    ports:
+      - 3308:3306
+#    volumes:
+#      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+#    command:
+#      - --default-authentication-plugin=mysql_native_password
+    networks:
+      - rabitpos
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - 8882:80
+    volumes:
+      - ./rabitpos:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    networks:
+      - rabitpos
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8881:80
+    environment:
+      - PMA_HOST=db
+    networks:
+      - rabitpos
+
+networks:
+  rabitpos:
+    driver: bridge
